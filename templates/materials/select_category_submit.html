@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+
+{% block title %}Submit Work - Tujiimarishe Digital Hub{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2><i class="fas fa-upload"></i> Submit Work</h2>
+            <a href="{% url 'materials:my_submissions' %}" class="btn btn-outline-secondary">
+                <i class="fas fa-folder-open"></i> View My Submissions
+            </a>
+        </div>
+
+        <div class="alert alert-info">
+            <i class="fas fa-info-circle"></i> 
+            <strong>Work Submission:</strong> Only available for <strong>Enterprise (KSh 100)</strong> and <strong>Premium (KSh 200)</strong> access levels. 
+            After learning a skill, submit your work for mentor review and feedback.
+        </div>
+
+        {% if purchases %}
+            <h4 class="mb-3"><i class="fas fa-check-circle text-success"></i> Skills You Can Submit Work For</h4>
+            <div class="row g-4 mb-5">
+                {% for purchase in purchases %}
+                <div class="col-md-6 col-lg-4">
+                    <div class="card skill-card shadow-sm h-100">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center mb-3">
+                                <i class="fas {{ purchase.category.icon|default:'fa-graduation-cap' }} fa-3x text-primary me-3"></i>
+                                <div>
+                                    <h5 class="card-title mb-0">{{ purchase.category.name }}</h5>
+                                    <span class="badge bg-{% if purchase.access_level == 'premium' %}warning{% elif purchase.access_level == 'enterprise' %}info{% else %}success{% endif %}">
+                                        {{ purchase.get_access_level_display }}
+                                    </span>
+                                </div>
+                            </div>
+                            
+                            {% if purchase.category.description %}
+                                <p class="card-text text-muted">{{ purchase.category.description|truncatewords:15 }}</p>
+                            {% endif %}
+                            
+                            <div class="mt-3">
+                                <a href="{% url 'materials:submit_work' purchase.category.id %}" class="btn btn-primary w-100">
+                                    <i class="fas fa-upload"></i> Submit Work for This Skill
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="alert alert-warning text-center mb-4">
+                <i class="fas fa-exclamation-triangle fa-3x mb-3"></i>
+                <h4>No Enterprise or Premium Skills</h4>
+                <p>You don't have any Enterprise or Premium access levels yet. Upgrade to submit work for mentor review.</p>
+            </div>
+        {% endif %}
+
+        {% if basic_purchases %}
+            <h4 class="mb-3"><i class="fas fa-lock text-warning"></i> Basic (Free) Skills - Upgrade to Submit Work</h4>
+            <div class="row g-4">
+                {% for purchase in basic_purchases %}
+                <div class="col-md-6 col-lg-4">
+                    <div class="card skill-card shadow-sm h-100 border-warning">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center mb-3">
+                                <i class="fas {{ purchase.category.icon|default:'fa-graduation-cap' }} fa-3x text-muted me-3"></i>
+                                <div>
+                                    <h5 class="card-title mb-0">{{ purchase.category.name }}</h5>
+                                    <span class="badge bg-success">
+                                        {{ purchase.get_access_level_display }}
+                                    </span>
+                                </div>
+                            </div>
+                            
+                            {% if purchase.category.description %}
+                                <p class="card-text text-muted">{{ purchase.category.description|truncatewords:15 }}</p>
+                            {% endif %}
+                            
+                            <div class="alert alert-warning mb-0 mt-3">
+                                <small><i class="fas fa-info-circle"></i> Basic access allows learning only. Upgrade to submit work.</small>
+                            </div>
+                            
+                            <div class="mt-3">
+                                <a href="{% url 'materials:category_detail' purchase.category.id %}" class="btn btn-outline-warning w-100">
+                                    <i class="fas fa-arrow-up"></i> Upgrade to Submit Work
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        {% if not purchases and not basic_purchases %}
+            <div class="alert alert-warning text-center">
+                <i class="fas fa-exclamation-triangle fa-3x mb-3"></i>
+                <h4>No Skills Purchased</h4>
+                <p>You need to purchase a skill category before you can submit work for review.</p>
+                <a href="{% url 'materials:my_materials' %}" class="btn btn-primary">
+                    <i class="fas fa-shopping-cart"></i> Browse Available Skills
+                </a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+

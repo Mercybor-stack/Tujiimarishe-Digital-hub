@@ -1,0 +1,159 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ category.name }} - Tujiimarishe Digital Hub{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-12">
+        <a href="{% url 'materials:my_materials' %}" class="btn btn-outline-light mb-3">
+            <i class="fas fa-arrow-left"></i> Back to Categories
+        </a>
+        
+        <!-- Category Header -->
+        <div class="card bg-white shadow-lg border-0 mb-4">
+            <div class="card-body p-4 text-center">
+                <i class="fas {{ category.icon }} fa-4x text-primary mb-3"></i>
+                <h1 class="display-5 text-dark">{{ category.name }}</h1>
+                <p class="lead text-muted">{{ category.description }}</p>
+                
+                <!-- Access Badge -->
+                <div class="mt-3">
+                    {% if user_access_level == 'basic' %}
+                        <span class="badge bg-success fs-6">Your Access: Basic (FREE)</span>
+                    {% elif user_access_level == 'enterprise' %}
+                        <span class="badge bg-primary fs-6">Your Access: Enterprise</span>
+                    {% elif user_access_level == 'premium' %}
+                        <span class="badge bg-dark fs-6">Your Access: Premium</span>
+                    {% endif %}
+                    <p class="text-muted small mt-2">
+                        You have access to {{ accessible_count }} of {{ total_materials }} lessons ({{ percentage_unlocked }}%)
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pricing Tiers -->
+        <div class="row g-4 mb-4">
+            <!-- Basic Tier -->
+            <div class="col-md-4">
+                <div class="card h-100 {% if user_access_level == 'basic' %}border-success border-3{% endif %}">
+                    <div class="card-body text-center">
+                        <h4>Basic</h4>
+                        <h2 class="text-success">Free</h2>
+                        <ul class="list-unstyled text-start">
+                            <li class="mb-2">✓ View learning materials</li>
+                            <li class="mb-2">✓ Intro lessons (20%)</li>
+                            <li class="mb-2">✗ Cannot submit work</li>
+                        </ul>
+                        {% if user_access_level == 'basic' %}
+                            <span class="badge bg-success">Current Plan</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Enterprise Tier -->
+            <div class="col-md-4">
+                <div class="card h-100 {% if user_access_level == 'enterprise' %}border-primary border-3{% endif %}">
+                    <div class="card-body text-center">
+                        <h4>Enterprise</h4>
+                        <h2 class="text-primary">KSh 100</h2>
+                        <ul class="list-unstyled text-start">
+                            <li class="mb-2">✓ Intermediate content (60%)</li>
+                            <li class="mb-2">✓ Submit work for review</li>
+                            <li class="mb-2">✓ Downloadable resources</li>
+                        </ul>
+                        {% if user_access_level == 'enterprise' %}
+                            <span class="badge bg-primary">Current Plan</span>
+                        {% elif user_access_level == 'basic' %}
+                            <a href="{% url 'materials:checkout' category.id 'enterprise' %}" class="btn btn-primary w-100">
+                                <i class="fas fa-arrow-up"></i> Upgrade
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Premium Tier -->
+            <div class="col-md-4">
+                <div class="card h-100 {% if user_access_level == 'premium' %}border-dark border-3{% endif %}">
+                    <div class="card-body text-center">
+                        <h4>Premium</h4>
+                        <h2 class="text-dark">KSh 200</h2>
+                        <ul class="list-unstyled text-start">
+                            <li class="mb-2">✓ Full access (100%)</li>
+                            <li class="mb-2">✓ Expert masterclasses</li>
+                            <li class="mb-2">✓ Priority support</li>
+                        </ul>
+                        {% if user_access_level == 'premium' %}
+                            <span class="badge bg-dark">Current Plan</span>
+                        {% else %}
+                            <a href="{% url 'materials:checkout' category.id 'premium' %}" class="btn btn-dark w-100">
+                                <i class="fas fa-crown"></i> Go Premium
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MATERIALS LIST -->
+        <div class="card bg-white shadow-lg border-0">
+            <div class="card-body p-4">
+                <h3 class="text-dark mb-4">
+                    <i class="fas fa-book-open"></i> Learning Materials
+                </h3>
+
+                {% if accessible_materials %}
+                    <!-- Available Materials -->
+                    <h5 class="text-success mb-3">
+                        <i class="fas fa-unlock"></i> Available Now ({{ accessible_materials|length }})
+                    </h5>
+                    <div class="list-group mb-4">
+                        {% if locked_materials %}
+                             <!-- Locked Materials -->
+                <h5 class="text-warning mb-3">
+                    <i class="fas fa-lock"></i> Locked Materials ({{ locked_materials|length }})
+                </h5>
+                <div class="list-group mb-3">
+                    {% for material in locked_materials %}
+                    <div class="list-group-item bg-light">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="flex-grow-1">
+                                <h5 class="mb-1 text-muted">
+                                    <i class="fas fa-lock"></i> {{ material.title }}
+                                </h5>
+                                <p class="mb-1 small text-muted">{{ material.description|truncatewords:15 }}</p>
+                                <span class="badge bg-warning text-dark">
+                                    {% if material.access_level == 'enterprise' %}
+                                        Enterprise Required (KSh 100)
+                                    {% else %}
+                                        Premium Required (KSh 200)
+                                    {% endif %}
+                                </span>
+                            </div>
+                            <div>
+                                <a href="{% url 'materials:checkout' category.id material.access_level %}" 
+                                   class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-unlock"></i> Unlock
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            {% if not accessible_materials and not locked_materials %}
+                <div class="alert alert-warning text-center">
+                    <i class="fas fa-exclamation-triangle fa-3x mb-3"></i>
+                    <h4>No Materials Yet</h4>
+                    <p>This skill category doesn't have any learning materials yet. Check back soon!</p>
+                </div>
+            {% endif %}
+
+        </div>
+    </div>
+</div>
+</div>
+{% endblock %}

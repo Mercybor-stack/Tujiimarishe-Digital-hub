@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block title %}Payment Successful - Tujiimarishe Digital Hub{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow-lg border-0">
+            <div class="card-body p-5 text-center">
+                <!-- Success Animation -->
+                <div class="mb-4">
+                    <i class="fas fa-check-circle fa-5x text-success"></i>
+                </div>
+                
+                <h2 class="card-title text-dark mb-3">Payment Successful!</h2>
+                <p class="lead text-dark">Your access has been upgraded</p>
+                
+                {% if latest_payment %}
+                <div class="alert alert-success text-start">
+                    <h5><i class="fas fa-receipt"></i> Payment Details</h5>
+                    <hr>
+                    <p class="mb-1"><strong>Skill:</strong> {{ latest_payment.category.name }}</p>
+                    <p class="mb-1"><strong>Access Level:</strong> {{ latest_payment.access_level|title }}</p>
+                    <p class="mb-1"><strong>Amount Paid:</strong> KSh {{ latest_payment.amount }}</p>
+                    <p class="mb-1"><strong>Transaction Code:</strong> {{ latest_payment.mpesa_code }}</p>
+                    <p class="mb-0"><strong>Date:</strong> {{ latest_payment.created_at|date:"F d, Y \a\t g:i A" }}</p>
+                </div>
+                {% endif %}
+                
+                <p class="text-muted mb-4">
+                    🎉 You can now access all {{ latest_payment.access_level }} materials for {{ latest_payment.category.name }}!
+                </p>
+                
+                <hr class="my-4">
+                
+                <div class="d-grid gap-2">
+                    <a href="{% url 'materials:category_detail' latest_payment.category.id %}" class="btn btn-primary btn-lg">
+                        <i class="fas fa-play-circle"></i> Start Learning Now
+                    </a>
+                    <a href="{% url 'materials:my_materials' %}" class="btn btn-outline-secondary">
+                        <i class="fas fa-book-open"></i> Browse All Skills
+                    </a>
+                    <a href="{% url 'materials:payment_history' %}" class="btn btn-outline-info">
+                        <i class="fas fa-history"></i> View Payment History
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

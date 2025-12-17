@@ -1,0 +1,107 @@
+{% extends 'base.html' %}
+
+{% block title %}Checkout - {{ category.name }} - Tujiimarishe Digital Hub{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+        <div class="card shadow-lg border-0">
+            <div class="card-header bg-primary text-white text-center py-4">
+                <i class="fas fa-mobile-alt fa-3x mb-2"></i>
+                <h3>Complete Payment</h3>
+                <p class="mb-0">M-Pesa Payment Simulation</p>
+            </div>
+            
+            <div class="card-body p-4">
+                <!-- Order Summary -->
+                <div class="alert alert-info">
+                    <h5 class="mb-3"><i class="fas fa-shopping-cart"></i> Order Summary</h5>
+                    <div class="row">
+                        <div class="col-6"><strong>Skill:</strong></div>
+                        <div class="col-6 text-end">{{ category.name }}</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6"><strong>Access Level:</strong></div>
+                        <div class="col-6 text-end">{{ level_display }}</div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-6"><strong>Total Amount:</strong></div>
+                        <div class="col-6 text-end"><h4 class="text-primary mb-0">KSh {{ amount }}</h4></div>
+                    </div>
+                </div>
+
+                <!-- Payment Form -->
+                <form method="POST">
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label class="form-label">
+                            <i class="fas fa-phone"></i> M-Pesa Phone Number
+                        </label>
+                        <input type="text" 
+                               name="phone_number" 
+                               class="form-control form-control-lg" 
+                               placeholder="0712345678" 
+                               required
+                               pattern="[0-9]{10,12}"
+                               title="Enter a valid phone number (10-12 digits)">
+                        <small class="form-text text-muted">
+                            Enter your M-Pesa registered phone number
+                        </small>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label">
+                            <i class="fas fa-receipt"></i> M-Pesa Transaction Code
+                        </label>
+                        <input type="text" 
+                               name="mpesa_code" 
+                               class="form-control form-control-lg" 
+                               placeholder="QA12BC3456" 
+                               required
+                               minlength="10"
+                               title="Enter M-Pesa confirmation code (minimum 10 characters)">
+                        <small class="form-text text-muted">
+                            Enter the M-Pesa confirmation code (e.g., QA12BC3456)
+                        </small>
+                    </div>
+
+                    <!-- Simulation Notice -->
+                    <div class="alert alert-warning">
+                        <i class="fas fa-info-circle"></i>
+                        <strong>Test Mode:</strong> This is a payment simulation. 
+                        Enter any code with 10+ characters to proceed.
+                    </div>
+
+                    <!-- Payment Instructions -->
+                    <div class="card bg-light mb-3">
+                        <div class="card-body">
+                            <h6 class="card-title"><i class="fas fa-lightbulb"></i> How to Pay:</h6>
+                            <ol class="mb-0 small">
+                                <li>Go to M-Pesa menu on your phone</li>
+                                <li>Select Send Money</li>
+                                <li>Phone Number: <strong>0716133951</strong></li>
+                                <li>Amount: <strong>KSh {{ amount }}</strong></li>
+                                <li>Enter your M-Pesa PIN</li>
+                                <li>You'll receive confirmation SMS with code</li>
+                                <li>Enter that code above</li>
+                            </ol>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-success btn-lg">
+                            <i class="fas fa-check-circle"></i> Complete Payment (KSh {{ amount }})
+                        </button>
+                        <a href="{% url 'materials:category_detail' category.id %}" class="btn btn-outline-secondary">
+                            <i class="fas fa-times"></i> Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

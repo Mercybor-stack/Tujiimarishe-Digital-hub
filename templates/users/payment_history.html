@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+{% block title %}Payment History - Tujiimarishe Digital Hub{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2><i class="fas fa-wallet"></i> Payment History</h2>
+            <a href="{% url 'materials:my_materials' %}" class="btn btn-primary">
+                <i class="fas fa-shopping-cart"></i> Browse Skills
+            </a>
+        </div>
+
+        {% if payments %}
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Date</th>
+                            <th>Skill Category</th>
+                            <th>Access Level</th>
+                            <th>Amount</th>
+                            <th>M-Pesa Code</th>
+                            <th>Phone Number</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for payment in payments %}
+                        <tr>
+                            <td>{{ payment.created_at|date:"M d, Y H:i" }}</td>
+                            <td>
+                                <strong>{{ payment.category.name }}</strong>
+                            </td>
+                            <td>
+                                <span class="badge bg-{% if payment.access_level == 'premium' %}warning{% elif payment.access_level == 'enterprise' %}info{% else %}success{% endif %}">
+                                    {{ payment.access_level|title }}
+                                </span>
+                            </td>
+                            <td><strong>KSh {{ payment.amount }}</strong></td>
+                            <td><code>{{ payment.mpesa_code }}</code></td>
+                            <td>{{ payment.phone_number }}</td>
+                            <td>
+                                {% if payment.is_verified %}
+                                    <span class="badge bg-success">
+                                        <i class="fas fa-check-circle"></i> Verified
+                                    </span>
+                                {% else %}
+                                    <span class="badge bg-warning text-dark">
+                                        <i class="fas fa-clock"></i> Pending
+                                    </span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="alert alert-info text-center">
+                <i class="fas fa-wallet fa-3x mb-3"></i>
+                <h4>No Payment History</h4>
+                <p>You haven't made any payments yet. Browse our available skills and start your learning journey!</p>
+                <a href="{% url 'materials:my_materials' %}" class="btn btn-primary">
+                    <i class="fas fa-shopping-cart"></i> Browse Available Skills
+                </a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+

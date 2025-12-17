@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block title %}My Learning - Tujiimarishe Digital Hub{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2><i class="fas fa-book"></i> My Learning</h2>
+            <a href="{% url 'materials:my_materials' %}" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Browse More Skills
+            </a>
+        </div>
+
+        {% if purchases %}
+            <div class="row g-4">
+                {% for purchase in purchases %}
+                <div class="col-md-6 col-lg-4">
+                    <div class="card skill-card shadow-sm h-100">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center mb-3">
+                                <i class="fas {{ purchase.category.icon|default:'fa-graduation-cap' }} fa-3x text-primary me-3"></i>
+                                <div>
+                                    <h5 class="card-title mb-0">{{ purchase.category.name }}</h5>
+                                    <span class="badge bg-{% if purchase.access_level == 'premium' %}warning{% elif purchase.access_level == 'enterprise' %}info{% else %}success{% endif %}">
+                                        {{ purchase.get_access_level_display }}
+                                    </span>
+                                </div>
+                            </div>
+                            
+                            {% if purchase.category.description %}
+                                <p class="card-text text-muted">{{ purchase.category.description|truncatewords:15 }}</p>
+                            {% endif %}
+                            
+                            <div class="d-flex justify-content-between align-items-center mt-3">
+                                <small class="text-muted">
+                                    <i class="fas fa-calendar"></i> Purchased {{ purchase.purchased_at|date:"M d, Y" }}
+                                </small>
+                            </div>
+                            
+                            <div class="mt-3">
+                                <a href="{% url 'materials:category_detail' purchase.category.id %}" class="btn btn-primary w-100">
+                                    <i class="fas fa-play-circle"></i> Start Learning
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="alert alert-info text-center">
+                <i class="fas fa-book-open fa-3x mb-3"></i>
+                <h4>No Learning Materials Yet</h4>
+                <p>You haven't purchased any skills yet. Browse our available courses and start your learning journey!</p>
+                <a href="{% url 'materials:my_materials' %}" class="btn btn-primary">
+                    <i class="fas fa-search"></i> Browse Available Skills
+                </a>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+

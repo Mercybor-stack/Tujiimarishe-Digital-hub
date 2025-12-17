@@ -1,0 +1,344 @@
+{% extends 'base.html' %}
+
+{% block title %}Home - Tujiimarishe Digital Hub{% endblock %}
+
+{% block content %}
+<div class="hero-section text-center py-5">
+    <h1 class="display-4 fw-bold text-white">Welcome to Tujiimarishe Digital Hub</h1>
+    <p class="lead text-white">Empowering Kenya Through Digital Skills Training</p>
+    
+    {% if user.is_authenticated %}
+        <div class="mt-4">
+            <a href="#skills" class="btn btn-light btn-lg me-2">
+                <i class="fas fa-book-open"></i> Browse Skills
+            </a>
+            <a href="#" class="btn btn-outline-light btn-lg">
+                <i class="fas fa-user"></i> My Dashboard
+            </a>
+        </div>
+    {% else %}
+        <div class="mt-4">
+            <a href="{% url 'register' %}" class="btn btn-light btn-lg me-2">
+                <i class="fas fa-user-plus"></i> Get Started Free
+            </a>
+            <a href="{% url 'login' %}" class="btn btn-outline-light btn-lg">
+                <i class="fas fa-sign-in-alt"></i> Login
+            </a>
+        </div>
+    {% endif %}
+</div>
+
+<!-- Skills We Offer Section -->
+<div id="skills" class="row mt-5 mb-5">
+    <div class="col-md-12">
+        <h2 class="text-center mb-4">Digital Skills We Offer</h2>
+        <p class="text-center text-muted mb-5">Choose individual skills and unlock content at your own pace</p>
+    </div>
+</div>
+
+<div class="row g-4 mb-5">
+    <!-- Digital Marketing Skill -->
+    <div class="col-md-6 col-lg-3">
+        <div class="card skill-card h-100 shadow-sm">
+            <div class="card-body text-center">
+                <i class="fas fa-bullhorn fa-3x text-primary mb-3"></i>
+                <h5 class="card-title">Digital Marketing</h5>
+                <p class="card-text">SEO, social media marketing, email campaigns, and online advertising strategies.</p>
+                
+                <div class="mt-4">
+                    <div class="mb-3">
+                        <span class="badge bg-success">Basic: FREE</span>
+                        <p class="small text-muted mb-0">Intro lessons (20%)</p>
+                    </div>
+                    <div class="mb-3">
+                        <span class="badge bg-primary">Enterprise: KSh 100</span>
+                        <p class="small text-muted mb-0">Intermediate content (60%)</p>
+                    </div>
+                    <div class="mb-3">
+                        <span class="badge bg-dark">Premium: KSh 200</span>
+                        <p class="small text-muted mb-0">Full access (100%)</p>
+                    </div>
+                </div>
+                
+                <a href="{% url 'materials:my_materials' %}" class="btn btn-primary btn-sm mt-2">
+                    <i class="fas fa-arrow-right"></i> View Course
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Graphic Design Skill -->
+    <div class="col-md-6 col-lg-3">
+        <div class="card skill-card h-100 shadow-sm">
+            <div class="card-body text-center">
+                <i class="fas fa-palette fa-3x text-primary mb-3"></i>
+                <h5 class="card-title">Graphic Design</h5>
+                <p class="card-text">Canva, logo design, branding, and visual content creation.</p>
+                
+                <div class="mt-4">
+                    <div class="mb-3">
+                        <span class="badge bg-success">Basic: FREE</span>
+                        <p class="small text-muted mb-0">Intro lessons (20%)</p>
+                    </div>
+                    <div class="mb-3">
+                        <span class="badge bg-primary">Enterprise: KSh 100</span>
+                        <p class="small text-muted mb-0">Intermediate content (60%)</p>
+                    </div>
+                    <div class="mb-3">
+                        <span class="badge bg-dark">Premium: KSh 200</span>
+                        <p class="small text-muted mb-0">Full access (100%)</p>
+                    </div>
+                </div>
+                
+                <a href="{% url 'materials:my_materials' %}" class="btn btn-primary btn-sm mt-2">
+                    <i class="fas fa-arrow-right"></i> View Course
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Computer Literacy Skill -->
+    <div class="col-md-6 col-lg-3">
+        <div class="card skill-card h-100 shadow-sm">
+            <div class="card-body text-center">
+                <i class="fas fa-laptop fa-3x text-primary mb-3"></i>
+                <h5 class="card-title">Computer Literacy</h5>
+                <p class="card-text">MS Office, Google Workspace, file management, and essential computer skills.</p>
+                
+                <div class="mt-4">
+                    <div class="mb-3">
+                        <span class="badge bg-success">Basic: FREE</span>
+                        <p class="small text-muted mb-0">Intro lessons (20%)</p>
+                    </div>
+                    <div class="mb-3">
+                        <span class="badge bg-primary">Enterprise: KSh 100</span>
+                        <p class="small text-muted mb-0">Intermediate content (60%)</p>
+                    </div>
+                    <div class="mb-3">
+                        <span class="badge bg-dark">Premium: KSh 200</span>
+                        <p class="small text-muted mb-0">Full access (100%)</p>
+                    </div>
+                </div>
+                
+                <a href="{% url 'materials:my_materials' %}" class="btn btn-primary btn-sm mt-2">
+                    <i class="fas fa-arrow-right"></i> View Course
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Data Entry Skill -->
+    <div class="col-md-6 col-lg-3">
+        <div class="card skill-card h-100 shadow-sm">
+            <div class="card-body text-center">
+                <i class="fas fa-keyboard fa-3x text-primary mb-3"></i>
+                <h5 class="card-title">Data Entry</h5>
+                <p class="card-text">Speed typing, data accuracy, spreadsheet management, and database handling.</p>
+                
+                <div class="mt-4">
+                    <div class="mb-3">
+                        <span class="badge bg-success">Basic: FREE</span>
+                        <p class="small text-muted mb-0">Intro lessons (20%)</p>
+                    </div>
+                    <div class="mb-3">
+                        <span class="badge bg-primary">Enterprise: KSh 100</span>
+                        <p class="small text-muted mb-0">Intermediate content (60%)</p>
+                    </div>
+                    <div class="mb-3">
+                        <span class="badge bg-dark">Premium: KSh 200</span>
+                        <p class="small text-muted mb-0">Full access (100%)</p>
+                    </div>
+                </div>
+                
+                <a href="{% url 'materials:my_materials' %}" class="btn btn-primary btn-sm mt-2">
+                    <i class="fas fa-arrow-right"></i> View Course
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- How It Works -->
+<div class="row mt-5 mb-5">
+    <div class="col-md-12">
+        <div class="card bg-light border-0">
+            <div class="card-body p-5">
+                <h3 class="text-center mb-4">How It Works</h3>
+                <div class="row">
+                    <div class="col-md-4 text-center mb-3">
+                        <i class="fas fa-user-plus fa-3x text-primary mb-3"></i>
+                        <h5>1. Sign Up Free</h5>
+                        <p>Create your account and access all basic (intro) lessons for free</p>
+                    </div>
+                    <div class="col-md-4 text-center mb-3">
+                        <i class="fas fa-list fa-3x text-primary mb-3"></i>
+                        <h5>2. Choose Your Skills</h5>
+                        <p>Pick the skills you want to learn and upgrade individual courses</p>
+                    </div>
+                    <div class="col-md-4 text-center mb-3">
+                        <i class="fas fa-graduation-cap fa-3x text-primary mb-3"></i>
+                        <h5>3. Learn & Grow</h5>
+                        <p>Access your content anytime and build your digital skillset</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Pricing Explanation -->
+<div class="row mt-5 mb-5">
+    <div class="col-md-12">
+        <h3 class="text-center mb-4">Flexible Pricing Per Skill</h3>
+        <p class="text-center text-muted mb-5">Pay only for what you need. Each skill has three tiers.</p>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-header bg-success text-white text-center">
+                <h5 class="mb-0"><i class="fas fa-seedling"></i> Basic (Free)</h5>
+            </div>
+            <div class="card-body">
+                <ul class="list-unstyled">
+                    <li class="mb-2"><i class="fas fa-check text-success"></i> Introductory lessons</li>
+                    <li class="mb-2"><i class="fas fa-check text-success"></i> 20% of course content</li>
+                    <li class="mb-2"><i class="fas fa-check text-success"></i> Sample projects</li>
+                    <li class="mb-2"><i class="fas fa-check text-success"></i> Community forum</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card h-100 shadow-sm border-primary" style="border-width: 2px;">
+            <div class="card-header bg-primary text-white text-center">
+                <h5 class="mb-0"><i class="fas fa-briefcase"></i> Enterprise</h5>
+                <h4 class="mt-2">KSh 100/skill</h4>
+            </div>
+            <div class="card-body">
+                <ul class="list-unstyled">
+                    <li class="mb-2"><i class="fas fa-check text-primary"></i> All Basic content</li>
+                    <li class="mb-2"><i class="fas fa-check text-primary"></i> Intermediate lessons</li>
+                    <li class="mb-2"><i class="fas fa-check text-primary"></i> 60% of course content</li>
+                    <li class="mb-2"><i class="fas fa-check text-primary"></i> Downloadable PDFs</li>
+                    <li class="mb-2"><i class="fas fa-check text-primary"></i> Project templates</li>
+                    <li class="mb-2"><i class="fas fa-check text-primary"></i> Submit work for feedback</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-header bg-dark text-white text-center">
+                <h5 class="mb-0"><i class="fas fa-crown"></i> Premium</h5>
+                <h4 class="mt-2">KSh 200/skill</h4>
+            </div>
+            <div class="card-body">
+                <ul class="list-unstyled">
+                    <li class="mb-2"><i class="fas fa-check text-warning"></i> All Enterprise content</li>
+                    <li class="mb-2"><i class="fas fa-check text-warning"></i> Expert masterclasses</li>
+                    <li class="mb-2"><i class="fas fa-check text-warning"></i> 100% complete access</li>
+                    <li class="mb-2"><i class="fas fa-check text-warning"></i> Exclusive projects</li>
+                    <li class="mb-2"><i class="fas fa-check text-warning"></i> Submit work for feedback</li>
+                    <li class="mb-2"><i class="fas fa-check text-warning"></i> Priority mentor support</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Feature Comparison -->
+<div class="row mt-5 mb-5">
+    <div class="col-md-12">
+        <h3 class="text-center mb-4">What's Included in Each Tier</h3>
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th>Feature</th>
+                        <th class="text-center">Basic (Free)</th>
+                        <th class="text-center bg-primary text-white">Enterprise (KSh 100)</th>
+                        <th class="text-center">Premium (KSh 200)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Introductory Tutorials</td>
+                        <td class="text-center"><i class="fas fa-check text-success"></i></td>
+                        <td class="text-center"><i class="fas fa-check text-success"></i></td>
+                        <td class="text-center"><i class="fas fa-check text-success"></i></td>
+                    </tr>
+                    <tr>
+                        <td>Content Access Per Skill</td>
+                        <td class="text-center">20%</td>
+                        <td class="text-center">60%</td>
+                        <td class="text-center">100%</td>
+                    </tr>
+                    <tr>
+                        <td>Downloadable Resources</td>
+                        <td class="text-center"><i class="fas fa-times text-danger"></i></td>
+                        <td class="text-center"><i class="fas fa-check text-success"></i></td>
+                        <td class="text-center"><i class="fas fa-check text-success"></i></td>
+                    </tr>
+                    <tr>
+                        <td>Intermediate Lessons</td>
+                        <td class="text-center"><i class="fas fa-times text-danger"></i></td>
+                        <td class="text-center"><i class="fas fa-check text-success"></i></td>
+                        <td class="text-center"><i class="fas fa-check text-success"></i></td>
+                    </tr>
+                    <tr>
+                        <td>Advanced Lessons</td>
+                        <td class="text-center"><i class="fas fa-times text-danger"></i></td>
+                        <td class="text-center"><i class="fas fa-times text-danger"></i></td>
+                        <td class="text-center"><i class="fas fa-check text-success"></i></td>
+                    </tr>
+                    <tr>
+                        <td>Expert Masterclasses</td>
+                        <td class="text-center"><i class="fas fa-times text-danger"></i></td>
+                        <td class="text-center"><i class="fas fa-times text-danger"></i></td>
+                        <td class="text-center"><i class="fas fa-check text-success"></i></td>
+                    </tr>
+                    <tr>
+                        <td>Submit Work for Feedback</td>
+                        <td class="text-center"><i class="fas fa-times text-danger"></i></td>
+                        <td class="text-center"><i class="fas fa-check text-success"></i></td>
+                        <td class="text-center"><i class="fas fa-check text-success"></i></td>
+                    </tr>
+                    <tr>
+                        <td>Mentor Support</td>
+                        <td class="text-center"><i class="fas fa-times text-danger"></i></td>
+                        <td class="text-center">Standard</td>
+                        <td class="text-center">Priority</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Call to Action -->
+<div class="row mt-5 mb-5">
+    <div class="col-md-12">
+        <div class="card text-center" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+            <div class="card-body p-5">
+                <h2 class="mb-3">Ready to Transform Your Future?</h2>
+                <p class="lead mb-4">Join thousands of Kenyans already learning digital skills</p>
+                {% if not user.is_authenticated %}
+                    <a href="{% url 'register' %}" class="btn btn-light btn-lg me-2">
+                        <i class="fas fa-rocket"></i> Start Free Today
+                    </a>
+                    <a href="#skills" class="btn btn-outline-light btn-lg">
+                        <i class="fas fa-book"></i> Browse Skills
+                    </a>
+                {% else %}
+                    <a href="#skills" class="btn btn-light btn-lg">
+                        <i class="fas fa-arrow-up"></i> Upgrade Your Skills
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

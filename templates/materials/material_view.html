@@ -1,0 +1,90 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ material.title }} - Tujiimarishe Digital Hub{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb" class="mb-4">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{% url 'materials:my_materials' %}">Skills</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'materials:category_detail' material.category.id %}">{{ material.category.name }}</a></li>
+                <li class="breadcrumb-item active">{{ material.title }}</li>
+            </ol>
+        </nav>
+
+        <!-- Material Header -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <div>
+                        <h2 class="mb-2">
+                            <i class="fas fa-{% if material.material_type == 'video' %}video{% else %}file-pdf{% endif %} text-primary"></i>
+                            {{ material.title }}
+                        </h2>
+                        <p class="text-muted mb-0">
+                            <i class="fas fa-tag"></i> {{ material.category.name }}
+                            <span class="badge bg-{% if material.access_level == 'premium' %}warning{% elif material.access_level == 'enterprise' %}info{% else %}success{% endif %} ms-2">
+                                {{ material.get_access_level_display }}
+                            </span>
+                        </p>
+                    </div>
+                    <a href="{% url 'materials:category_detail' material.category.id %}" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left"></i> Back to Category
+                    </a>
+                </div>
+                
+                {% if material.description %}
+                    <div class="mt-3">
+                        <p class="lead">{{ material.description }}</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Material Content -->
+        <div class="card shadow-sm">
+            <div class="card-body">
+                {% if material.material_type == 'video' and material.youtube_url %}
+                    <div class="text-center mb-4">
+                        <div class="alert alert-info">
+                            <i class="fab fa-youtube fa-3x mb-3"></i>
+                            <h4>Video Content</h4>
+                            <p>Click the button below to watch this video on YouTube</p>
+                            <a href="{{ material.youtube_url }}" target="_blank" class="btn btn-danger btn-lg">
+                                <i class="fab fa-youtube"></i> Watch on YouTube
+                            </a>
+                        </div>
+                    </div>
+                {% elif material.material_type == 'pdf' and material.pdf_file %}
+                    <div class="text-center mb-4">
+                        <i class="fas fa-file-pdf fa-5x text-danger mb-3"></i>
+                        <h4>{{ material.title }}</h4>
+                        <p class="text-muted">PDF Document</p>
+                    </div>
+                    <div class="text-center">
+                        <a href="{{ material.pdf_file.url }}" target="_blank" class="btn btn-danger btn-lg">
+                            <i class="fas fa-download"></i> Download PDF
+                        </a>
+                    </div>
+                {% else %}
+                    <div class="alert alert-warning text-center">
+                        <i class="fas fa-exclamation-triangle fa-3x mb-3"></i>
+                        <h4>Content Not Available</h4>
+                        <p>This material's content is not yet available. Please check back later.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Navigation to other materials -->
+        <div class="mt-4 text-center">
+            <a href="{% url 'materials:category_detail' material.category.id %}" class="btn btn-outline-primary">
+                <i class="fas fa-list"></i> View All Materials in This Category
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
