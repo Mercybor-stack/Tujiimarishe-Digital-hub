@@ -91,6 +91,7 @@ class MentorFeedback(models.Model):
     submission = models.OneToOneField(WorkSubmission, on_delete=models.CASCADE, related_name='feedback')
     mentor = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='feedback_given')
     feedback = models.TextField()
+    recommendation = models.TextField(blank=True)
     rating = models.CharField(max_length=20, choices=RATING_CHOICES)
     created_at = models.DateTimeField(auto_now_add=True)
     

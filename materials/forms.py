@@ -11,4 +11,4 @@ class WorkSubmissionForm(forms.ModelForm):
 class MentorFeedbackForm(forms.ModelForm):
     class Meta:
         model = MentorFeedback
-        fields = ['rating', 'feedback']
+        fields = ['rating', 'feedback', 'recommendation']

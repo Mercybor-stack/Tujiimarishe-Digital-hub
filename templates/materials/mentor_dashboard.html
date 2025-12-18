@@ -1,0 +1,144 @@
+{% extends 'base.html' %}
+
+{% block title %}Mentor Dashboard - Tujiimarishe Digital Hub{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2><i class="fas fa-chart-line"></i> Mentor Dashboard</h2>
+        </div>
+
+        <!-- Pending Submissions Section -->
+        <div class="mb-5">
+            <div class="card border-warning shadow-sm mb-3">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="mb-0">
+                        <i class="fas fa-hourglass-half"></i> Pending Review 
+                        <span class="badge bg-dark">{{ pending_count }}</span>
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% if pending_submissions %}
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Submission Title</th>
+                                        <th>Submitted by</th>
+                                        <th>Category</th>
+                                        <th>Submitted Date</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for submission in pending_submissions %}
+                                    <tr>
+                                        <td>
+                                            <strong>{{ submission.title }}</strong>
+                                            <br>
+                                            <small class="text-muted">{{ submission.description|truncatewords:15 }}</small>
+                                        </td>
+                                        <td>{{ submission.user.get_full_name|default:submission.user.username }}</td>
+                                        <td>
+                                            {% if submission.category %}
+                                                <span class="badge bg-info">{{ submission.category.name }}</span>
+                                            {% else %}
+                                                <span class="text-muted">N/A</span>
+                                            {% endif %}
+                                        </td>
+                                        <td><small>{{ submission.submitted_at|date:"M d, Y g:i A" }}</small></td>
+                                        <td>
+                                            <a href="{% url 'materials:submission_detail' submission.pk %}" class="btn btn-sm btn-warning">
+                                                <i class="fas fa-eye"></i> Review
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="alert alert-info mb-0">
+                            <i class="fas fa-check-circle"></i> All submissions have been reviewed!
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Recently Reviewed Section -->
+        <div class="mb-5">
+            <div class="card border-success shadow-sm">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-check"></i> Recently Reviewed
+                    </h5>
+                </div>
+                <div class="card-body">
+                    {% if reviewed_submissions %}
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Submission Title</th>
+                                        <th>Submitted by</th>
+                                        <th>Reviewed by</th>
+                                        <th>Rating</th>
+                                        <th>Reviewed Date</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for submission in reviewed_submissions %}
+                                    <tr>
+                                        <td>
+                                            <strong>{{ submission.title }}</strong>
+                                            <br>
+                                            <small class="text-muted">{{ submission.description|truncatewords:15 }}</small>
+                                        </td>
+                                        <td>{{ submission.user.get_full_name|default:submission.user.username }}</td>
+                                        <td>
+                                            {% if submission.feedback %}
+                                                {{ submission.feedback.mentor.get_full_name|default:submission.feedback.mentor.username }}
+                                            {% else %}
+                                                <span class="text-muted">—</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if submission.feedback %}
+                                                <span class="badge bg-{% if submission.feedback.rating == 'excellent' %}success{% elif submission.feedback.rating == 'good' %}info{% else %}warning{% endif %}">
+                                                    {{ submission.feedback.get_rating_display }}
+                                                </span>
+                                            {% else %}
+                                                <span class="text-muted">—</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if submission.feedback %}
+                                                <small>{{ submission.feedback.created_at|date:"M d, Y" }}</small>
+                                            {% else %}
+                                                <span class="text-muted">—</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <a href="{% url 'materials:submission_detail' submission.pk %}" class="btn btn-sm btn-outline-primary">
+                                                <i class="fas fa-eye"></i> View
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <div class="alert alert-info mb-0">
+                            <i class="fas fa-info-circle"></i> No reviewed submissions yet.
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

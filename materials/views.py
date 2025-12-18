@@ -2,8 +2,8 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.db.models import Q
-from .models import SkillCategory, LearningMaterial, UserSkillAccess, Payment, WorkSubmission
-from .forms import WorkSubmissionForm
+from .models import SkillCategory, LearningMaterial, UserSkillAccess, Payment, WorkSubmission, MentorFeedback
+from .forms import WorkSubmissionForm, MentorFeedbackForm
 
 # ==================== MATERIALS VIEWS ====================
 
@@ -78,9 +78,10 @@ def category_detail(request, category_id):
 
 
 @login_required
-def material_detail(request, material_id):
+def material_detail(request, category_id, material_id):
     """View a specific learning material (video or PDF)"""
-    material = get_object_or_404(LearningMaterial, pk=material_id)
+    category = get_object_or_404(SkillCategory, pk=category_id)
+    material = get_object_or_404(LearningMaterial, pk=material_id, category=category)
     
     # Check user's access level for this category
     user_access_level = 'basic'  # Default
@@ -113,7 +114,7 @@ def material_detail(request, material_id):
         'can_access': can_access,
         'related_materials': related_materials,
     }
-    return render(request, 'materials/material_detail.html', context)
+    return render(request, 'materials/material_view.html', context)
 
 
 # ==================== PAYMENT VIEWS ====================
@@ -228,13 +229,19 @@ def payment_history(request):
 # ==================== WORK SUBMISSION VIEWS ====================
 
 @login_required
-def submit_work(request):
+def submit_work(request, category_id=None):
     """View for learners to submit their work"""
+    category = None
+    if category_id:
+        category = get_object_or_404(SkillCategory, pk=category_id)
+    
     if request.method == 'POST':
         form = WorkSubmissionForm(request.POST, request.FILES)
         if form.is_valid():
             submission = form.save(commit=False)
             submission.user = request.user
+            if category:
+                submission.category = category
             submission.save()
             messages.success(request, 'Your work has been submitted successfully! A mentor will review it soon.')
             return redirect('materials:my_submissions')
@@ -243,6 +250,7 @@ def submit_work(request):
     
     context = {
         'form': form,
+        'category': category,
     }
     return render(request, 'materials/submit_work.html', context)
 
@@ -260,13 +268,81 @@ def my_submissions(request):
 
 @login_required
 def submission_detail(request, pk):
-    """View details of a specific submission"""
-    submission = get_object_or_404(WorkSubmission, pk=pk, user=request.user)
-    
+    """View details of a specific submission.
+
+    Staff and mentors can view any submission; learners can view only their own.
+    """
+    # Allow mentors/staff to view any submission
+    is_reviewer = request.user.is_authenticated and (request.user.is_staff or getattr(request.user, 'user_type', None) == 'mentor' or request.user.groups.filter(name='mentors').exists())
+
+    if is_reviewer:
+        submission = get_object_or_404(WorkSubmission, pk=pk)
+    else:
+        submission = get_object_or_404(WorkSubmission, pk=pk, user=request.user)
+
     context = {
         'submission': submission,
+        'can_review': is_reviewer,
     }
     return render(request, 'materials/submission_detail.html', context)
+
+
+@login_required
+def review_submission(request, pk):
+    """Allow mentors/staff to add or edit feedback and recommendation for a submission"""
+    # Only staff or users with a mentor role can review
+    if not (request.user.is_staff or getattr(request.user, 'user_type', None) == 'mentor'):
+        messages.error(request, 'You do not have permission to review submissions.')
+        return redirect('materials:my_submissions')
+
+    submission = get_object_or_404(WorkSubmission, pk=pk)
+
+    # Try to get existing feedback or create a new one
+    try:
+        feedback = submission.feedback
+    except MentorFeedback.DoesNotExist:
+        feedback = None
+
+    if request.method == 'POST':
+        form = MentorFeedbackForm(request.POST, instance=feedback)
+        if form.is_valid():
+            obj = form.save(commit=False)
+            obj.submission = submission
+            obj.mentor = request.user
+            obj.save()
+            # mark submission as reviewed
+            submission.is_reviewed = True
+            submission.save()
+            messages.success(request, 'Feedback saved.')
+            return redirect('materials:submission_detail', pk=submission.pk)
+    else:
+        form = MentorFeedbackForm(instance=feedback)
+
+    context = {
+        'submission': submission,
+        'form': form,
+    }
+    return render(request, 'materials/review_submission.html', context)
+
+
+@login_required
+def mentor_dashboard(request):
+    """Mentor dashboard showing submissions to review"""
+    # Only staff or mentors can access
+    if not (request.user.is_staff or getattr(request.user, 'user_type', None) == 'mentor' or request.user.groups.filter(name='mentors').exists()):
+        messages.error(request, 'You do not have permission to access this page.')
+        return redirect('home')
+
+    # Get all submissions, grouped by status
+    pending_submissions = WorkSubmission.objects.filter(is_reviewed=False).select_related('user', 'category').order_by('-submitted_at')
+    reviewed_submissions = WorkSubmission.objects.filter(is_reviewed=True).select_related('user', 'category', 'feedback__mentor').order_by('-submitted_at')[:10]
+
+    context = {
+        'pending_submissions': pending_submissions,
+        'reviewed_submissions': reviewed_submissions,
+        'pending_count': pending_submissions.count(),
+    }
+    return render(request, 'materials/mentor_dashboard.html', context)
 
 
 # ==================== USER DASHBOARD ====================
